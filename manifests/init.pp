@@ -75,7 +75,9 @@ define concat(
     fail('$warn is not a string or boolean')
   }
   validate_bool($force)
-  validate_string($backup)
+  if ! is_bool($backup) and ! is_string($backup) {
+    fail('$backup must be string or bool!')
+  }
   validate_bool($replace)
   validate_re($order, '^alpha$|^numeric$')
   validate_bool($ensure_newline)
@@ -177,7 +179,7 @@ define concat(
     }
 
     # remove extra whitespace from string interpolation to make testing easier
-    $command = strip(regsubst("${script_command} -o ${fragdir}/${concat_name} -d ${fragdir} ${warnflag} ${forceflag} ${orderflag} ${newlineflag}", '\s+', ' ', 'G'))
+    $command = strip(regsubst("${script_command} -o \"${fragdir}/${concat_name}\" -d \"${fragdir}\" ${warnflag} ${forceflag} ${orderflag} ${newlineflag}", '\s+', ' ', 'G'))
 
     # if puppet is running as root, this exec should also run as root to allow
     # the concatfragments.sh script to potentially be installed in path that
